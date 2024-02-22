@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="autocomplete_suggestions">
+        <item>Kurunegala</item>
+        <item>Wariyapola</item>
+        <item>Padeniya</item>
+        <item>Galle Face</item>
+        <item>Kollupitiya</item>
+        <item>Keselwatta</item>
+        <item>bambalapitiya</item>
+        <item>Wellawatta</item>
+        <item>Mt. Lavinia (Galkissa)</item>
+        <item>Galkissa</item>
+        <item>Ratmalana</item>
+        <item>Moratuwa</item>
+        <item>Walana</item>
+        <item>Panadura</item>
+        <item>Colombo</item>
+
+
+        <!-- Add more location suggestions as needed -->
+    </string-array>
+    <string-array name="country_codes">
+        <item>+94 (LK)</item>
+        <item>+1 (US)</item>
+        <item>+44 (UK)</item>
+        <!-- Add more country codes here -->
+    </string-array>
+
+    <string-array name="taxi_types_array">
+        <item>Bike</item>
+        <item>Van</item>
+        <item>Car</item>
+        <item>Three Wheeler</item>
+        <!-- Add more country codes here -->
+    </string-array>
+
+    <string-array name="user_type">
+        <item>User Types</item>
+        <item>Passenger</item>
+        <item>Bus Driver</item>
+        <item>Taxi Driver</item>
+        <item>Cargo Driver</item>
+        <!-- Add more country codes here -->
+    </string-array>
+    <string-array name="vehicle_types_array">
+        <item>Select Bus Type</item>
+        <item>CTB Bus</item>
+        <item>AC Bus</item>
+        <item>Private Bus</item>
+    </string-array>
+
+</resources>
