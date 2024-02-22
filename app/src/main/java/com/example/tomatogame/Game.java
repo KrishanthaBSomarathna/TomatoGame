@@ -1,9 +1,11 @@
 package com.example.tomatogame;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -42,6 +44,8 @@ public class Game extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private MediaPlayer buttonClickSound;
     private MediaPlayer backgroundMusicPlayer;
+    private Vibrator vibrator; // Declare Vibrator object
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +94,8 @@ public class Game extends AppCompatActivity {
                         scoreTextView.setText(String.valueOf(score));
                         fetchQuestion();
                     } else {
+                        // Vibrate for 1 second
+                        vibrator.vibrate(500);
                         wrongAnswersCount++;
                         remainingAttempts--;
                         updateHearts(); // Update hearts after wrong answer
@@ -114,6 +120,9 @@ public class Game extends AppCompatActivity {
 
         // Initialize button click sound
         buttonClickSound = MediaPlayer.create(this, R.raw.btnclick);
+
+        // Initialize Vibrator object
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         // Fetch question data and start timer
         fetchQuestion();
@@ -162,8 +171,6 @@ public class Game extends AppCompatActivity {
         });
     }
 
-
-
     private void updateHearts() {
         StringBuilder hearts = new StringBuilder();
         for (int i = 0; i < remainingAttempts; i++) {
@@ -192,7 +199,6 @@ public class Game extends AppCompatActivity {
                 .setCancelable(false)
                 .show();
     }
-
 
     private void restartGame() {
         score = 0;
@@ -248,7 +254,6 @@ public class Game extends AppCompatActivity {
                 .setCancelable(false)
                 .show();
     }
-
 
     @Override
     protected void onDestroy() {

@@ -145,6 +145,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/zero"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_0" />
 
         <Button
@@ -153,6 +154,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/one"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_1" />
 
         <Button
@@ -161,6 +163,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/two"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_2" />
 
         <Button
@@ -169,6 +172,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/three"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_3" />
 
         <Button
@@ -177,6 +181,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/four"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_4" />
 
 
@@ -203,6 +208,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/five"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_5" />
 
         <Button
@@ -211,6 +217,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/six"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_6" />
 
         <Button
@@ -219,6 +226,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/seven"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_7" />
 
         <Button
@@ -227,6 +235,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/ata"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_8" />
 
         <Button
@@ -235,6 +244,7 @@
             android:layout_height="63dp"
             android:layout_margin="10dp"
             android:foreground="@drawable/nine"
+            android:backgroundTint="@android:color/transparent"
             android:text="@string/_9" />
 
 

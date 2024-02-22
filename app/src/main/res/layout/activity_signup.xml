@@ -60,7 +60,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:foreground="@drawable/regbtn"
-            android:text="SEND OTP" />
+            android:text="SEND OTP"
+            android:backgroundTint="@android:color/transparent" />
 
     </LinearLayout>
     <LinearLayout
@@ -110,7 +111,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:foreground="@drawable/regbtn"
-            android:text="SEND OTP" />
+            android:text="SEND OTP"
+            android:backgroundTint="@android:color/transparent" />
 
     </LinearLayout>
 
