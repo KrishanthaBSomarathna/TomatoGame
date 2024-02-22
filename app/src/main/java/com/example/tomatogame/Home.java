@@ -63,7 +63,7 @@ public class Home extends AppCompatActivity {
 
             playButtonClickSound(() -> {
                 // Start the new activity after the sound completes
-                Intent intent = new Intent(Home.this, Register.class);
+                Intent intent = new Intent(Home.this, Signup.class);
                 startActivity(intent);
             });
             // Handle button click logic here
@@ -79,7 +79,7 @@ public class Home extends AppCompatActivity {
             // Play button click sound
             playButtonClickSound(() -> {
                 // Start the new activity after the sound completes
-                Intent intent = new Intent(Home.this, MainActivity.class);
+                Intent intent = new Intent(Home.this, Game.class);
                 startActivity(intent);
             });
         });

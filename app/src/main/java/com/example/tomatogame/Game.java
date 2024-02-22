@@ -12,8 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.squareup.picasso.Picasso;
 
@@ -23,7 +27,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class Game extends AppCompatActivity {
     private ApiService apiService;
     private ImageView questionImageView;
     private TextView solutionTextView;
@@ -41,8 +45,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_game);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
         backgroundMusicPlayer = MediaPlayer.create(this, R.raw.gamebg);
         backgroundMusicPlayer.setLooping(true); // Loop the background music
         backgroundMusicPlayer.start(); // Start playing the background music
@@ -87,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         if (remainingAttempts == 0) {
                             showGameOverDialog();
                         } else {
-                            Toast.makeText(MainActivity.this, "Incorrect Answer", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Game.this, "Incorrect Answer", Toast.LENGTH_SHORT).show();
                         }
                     }
                     resetTimer();
@@ -282,5 +291,4 @@ public class MainActivity extends AppCompatActivity {
         backgroundMusicPlayer.setLooping(true); // Loop the background music
         backgroundMusicPlayer.start();
     }
-
 }
