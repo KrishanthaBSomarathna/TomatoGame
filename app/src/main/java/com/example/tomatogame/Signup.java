@@ -1,5 +1,6 @@
 package com.example.tomatogame;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -31,19 +33,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
+
 public class Signup extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     private String verificationId;
-    EditText editTextPhoneNumber, editTextVerificationCode;
+    EditText editTextPhoneNumber, editTextVerificationCode,editTextUserName;
     private Button buttonSendOTP, buttonVerifyOTP;
 
-    LinearLayout otp,sendotp;
+    LinearLayout otp, sendotp;
     private ProgressBar progressBar;
 
     private TextView authfail;
     String fullPhoneNumber;
+    private ObjectAnimator zoomInX, zoomOutX, zoomInY, zoomOutY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,62 +73,49 @@ public class Signup extends AppCompatActivity {
 
         editTextPhoneNumber = findViewById(R.id.editTextPhoneNumber);
         editTextVerificationCode = findViewById(R.id.editTextVerificationCode);
+        editTextUserName = findViewById(R.id.editTextUserName);
         buttonSendOTP = findViewById(R.id.buttonSendOTP);
         buttonVerifyOTP = findViewById(R.id.buttonVerifyOTP);
         progressBar = findViewById(R.id.progressBar);
 
-
         buttonSendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String phoneNumber = editTextPhoneNumber.getText().toString().trim();
                 authfail.setVisibility(View.GONE);
 
                 if (phoneNumber.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Enter Phone Number", Toast.LENGTH_LONG).show();
                 } else {
-
                     sendVerificationCode(); // Call the function to send the OTP
-
                 }
             }
         });
 
-
-
-
         buttonVerifyOTP.setOnClickListener(v -> {
             String otp = editTextVerificationCode.getText().toString().trim();
 
-            if (!otp.isEmpty())
-            {
+            if (!otp.isEmpty()) {
                 progressBar.setVisibility(View.VISIBLE);
                 String code = editTextVerificationCode.getText().toString().trim();
                 verifyVerificationCode(code);
-            }
-            else {
+            } else {
                 Toast.makeText(getApplicationContext(), "Enter OTP CODE", Toast.LENGTH_LONG).show();
             }
-
-
         });
+
+        startLoopAnimations(); // Start animations
     }
 
 
     private void sendVerificationCode() {
-
-
         // Get the entered phone number
         String phoneNumber = editTextPhoneNumber.getText().toString().trim();
-
-
-
-
         // Concatenate the country code and phone number
         fullPhoneNumber = "+94" + phoneNumber;
-
         progressBar.setVisibility(View.VISIBLE);
+        editTextUserName.setVisibility(View.GONE);
+        editTextPhoneNumber.setVisibility(View.GONE);
 
         // Initiate phone number verification
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -136,8 +128,8 @@ public class Signup extends AppCompatActivity {
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                         signInWithPhoneAuthCredential(phoneAuthCredential);
                         progressBar.setVisibility(View.GONE);
-                    }
 
+                    }
 
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
@@ -149,7 +141,6 @@ public class Signup extends AppCompatActivity {
                             ex.printStackTrace();
                         }
                     }
-
 
                     @Override
                     public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
@@ -172,17 +163,45 @@ public class Signup extends AppCompatActivity {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        String username = editTextUserName.getText().toString();
                         // Phone authentication successful
-
-                        databaseReference.child("Passenger").child(fullPhoneNumber).child("UserName").setValue(fullPhoneNumber);
-
+                        databaseReference.child("User").child(fullPhoneNumber).child("UserName").setValue(username);
                         startActivity(new Intent(Signup.this, Home.class));
-
                     } else {
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             Toast.makeText(getApplicationContext(), "OTP Code Not Matched", Toast.LENGTH_SHORT).show();// The verification code entered was invalid
                         }
                     }
                 });
+    }
+
+    private void startLoopAnimations() {
+        // Create zoom in and zoom out animators for the sendotp view scaleX
+        zoomInX = ObjectAnimator.ofFloat(buttonSendOTP, "scaleX", 1.0f, 1.2f);
+        zoomInX.setRepeatCount(ObjectAnimator.INFINITE);
+        zoomInX.setRepeatMode(ObjectAnimator.REVERSE);
+        zoomInX.setDuration(1000);
+
+        zoomOutX = ObjectAnimator.ofFloat(buttonSendOTP, "scaleX", 1.2f, 1.0f);
+        zoomOutX.setRepeatCount(ObjectAnimator.INFINITE);
+        zoomOutX.setRepeatMode(ObjectAnimator.REVERSE);
+        zoomOutX.setDuration(1000);
+
+        // Create zoom in and zoom out animators for the sendotp view scaleY
+        zoomInY = ObjectAnimator.ofFloat(buttonSendOTP, "scaleY", 1.0f, 1.2f);
+        zoomInY.setRepeatCount(ObjectAnimator.INFINITE);
+        zoomInY.setRepeatMode(ObjectAnimator.REVERSE);
+        zoomInY.setDuration(1500);
+
+        zoomOutY = ObjectAnimator.ofFloat(buttonSendOTP, "scaleY", 1.2f, 1.0f);
+        zoomOutY.setRepeatCount(ObjectAnimator.INFINITE);
+        zoomOutY.setRepeatMode(ObjectAnimator.REVERSE);
+        zoomOutY.setDuration(1500);
+
+        // Start the animations for sendotp view
+        zoomInX.start();
+        zoomOutX.start();
+        zoomInY.start();
+        zoomOutY.start();
     }
 }

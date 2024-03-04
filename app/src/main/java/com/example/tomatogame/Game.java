@@ -1,26 +1,43 @@
 package com.example.tomatogame;
 
+import static android.content.ContentValues.TAG;
+
+import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
@@ -38,13 +55,19 @@ public class Game extends AppCompatActivity {
     private TextView timerTextView;
     private Button[] answerButtons;
     private int correctAnswer;
-    private int score = 0;
+    private int score = 50;
+    String higherScore;
     private int wrongAnswersCount = 0;
     private int remainingAttempts = 3; // Initially set to 3
     private CountDownTimer countDownTimer;
     private MediaPlayer buttonClickSound;
     private MediaPlayer backgroundMusicPlayer;
     private Vibrator vibrator; // Declare Vibrator object
+    private ObjectAnimator zoomInPlayX, zoomOutPlayX, zoomInPlayY, zoomOutPlayY;
+    private ImageButton restartButton,exitButton;
+    private FirebaseUser firebaseUser;
+    private DatabaseReference databaseReference;
+    private String phoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +82,11 @@ public class Game extends AppCompatActivity {
         backgroundMusicPlayer = MediaPlayer.create(this, R.raw.gamebg);
         backgroundMusicPlayer.setLooping(true); // Loop the background music
         backgroundMusicPlayer.start(); // Start playing the background music
+
+        //Initialize firebase
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        phoneNumber = firebaseUser.getPhoneNumber();
 
         // Initialize views
         questionImageView = findViewById(R.id.question_image_view);
@@ -100,7 +128,11 @@ public class Game extends AppCompatActivity {
                         remainingAttempts--;
                         updateHearts(); // Update hearts after wrong answer
                         if (remainingAttempts == 0) {
-                            showGameOverDialog();
+
+                            showPopupWindow("You have selected three times wrong Answer");
+                            if(score>Integer.parseInt(higherScore)) {
+                                saveProgress(String.valueOf(score));
+                            }
                         } else {
                             Toast.makeText(Game.this, "Incorrect Answer", Toast.LENGTH_SHORT).show();
                         }
@@ -127,6 +159,34 @@ public class Game extends AppCompatActivity {
         // Fetch question data and start timer
         fetchQuestion();
         startTimer();
+
+        //Save progress to firebase
+        // Retrieve the score
+        retrieveScore();
+    }
+
+    private void retrieveScore() {
+        DatabaseReference userRef = databaseReference.child("User").child(phoneNumber);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    higherScore = dataSnapshot.child("Score").getValue(String.class);
+                    Log.d(TAG, "Score: " + higherScore);
+                } else {
+                    Log.d(TAG, "User data not found for phone number: " + phoneNumber);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "retrieveScore:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
+    private void saveProgress( String score){
+        databaseReference.child("User").child(phoneNumber).child("Score").setValue(score);
     }
 
     private void playButtonClickSound() {
@@ -157,7 +217,7 @@ public class Game extends AppCompatActivity {
 
                         // Display the solution
                         correctAnswer = questionResponse.getSolution();
-                        solutionTextView.setText("Solution: " + correctAnswer);
+                        solutionTextView.setText("" + correctAnswer);
                     }
                 } else {
                     // Handle unsuccessful response
@@ -179,25 +239,45 @@ public class Game extends AppCompatActivity {
         heartTextView.setText(hearts.toString());
     }
 
-    private void showGameOverDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Game Over")
-                .setMessage("You have given three wrong answers. Your total score is " + score +
-                        ". Do you want to restart the game?")
-                .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        restartGame();
-                    }
-                })
-                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .setCancelable(false)
-                .show();
+    private void showPopupWindow( String message) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.show_popup_windows, null);
+
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.MATCH_PARENT;
+        boolean focusable = true;
+
+        PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // Initialize views from the popup layout
+        TextView scoreTextView = popupView.findViewById(R.id.scoreTextView);
+        restartButton = popupView.findViewById(R.id.restartButton);
+        exitButton = popupView.findViewById(R.id.exitButton);
+        TextView popuptext = popupView.findViewById(R.id.popuptext);
+
+        popuptext.setText(message);
+        startLoopAnimations(restartButton);
+        // Set score text
+        scoreTextView.setText(String.valueOf(score));
+
+        // Set click listeners for buttons
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restartGame();
+                popupWindow.dismiss();
+            }
+        });
+
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        // Show the popup window
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
     }
 
     private void restartGame() {
@@ -208,11 +288,47 @@ public class Game extends AppCompatActivity {
         updateHearts();
         fetchQuestion();
         resetTimer();
-        // Restart timer
     }
 
     private void startTimer() {
-        countDownTimer = new CountDownTimer(30000, 1000) {
+        long initialTime = 100000; // Initial time duration
+        int scoreThreshold = 10; // Score threshold to decrease time
+        long timeDecreaseAmount = 10000; // Amount to decrease time
+
+        // If score is less than 80, adjust time based on score
+        if (score < 80) {
+            // Calculate adjusted time
+            long adjustedTime = initialTime - ((score / scoreThreshold) * timeDecreaseAmount);
+            // Ensure the adjusted time doesn't go below zero
+            adjustedTime = Math.max(adjustedTime, 0);
+            // If score is a multiple of 20, decrease time by 10 seconds
+            if (score % scoreThreshold == 0 && adjustedTime > 0) {
+                adjustedTime -= timeDecreaseAmount;
+            }
+            // Restart the timer with the adjusted time
+            resetTimer(adjustedTime);
+        } else {
+            // If score is 80 or more, set timer value to 20000 milliseconds
+            resetTimer(20000);
+        }
+    }
+
+
+
+    private void resetTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            startTimer();
+        }
+    }
+
+    private void resetTimer(long timeInMillis) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel(); // Cancel the current timer
+        }
+
+        // Start a new timer with the specified time duration
+        countDownTimer = new CountDownTimer(timeInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 // Update timer text view with remaining time
@@ -222,37 +338,42 @@ public class Game extends AppCompatActivity {
             @Override
             public void onFinish() {
                 // Timer finished, show time-over dialog
-                showTimeOverDialog();
+                showPopupWindow("You have not selected an answer within times.");
+                saveProgress(String.valueOf(score));
             }
-        }.start();
+        };
+
+        countDownTimer.start(); // Start the new timer
     }
 
-    private void resetTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            startTimer();
-        }
-    }
+    private void startLoopAnimations(ImageButton restartButton) {
+        // Create zoom in and zoom out animators for the restartButton scaleX
+        zoomInPlayX = ObjectAnimator.ofFloat(this.restartButton, "scaleX", 1.0f, 1.2f);
+        zoomInPlayX.setRepeatCount(ObjectAnimator.INFINITE);
+        zoomInPlayX.setRepeatMode(ObjectAnimator.REVERSE);
+        zoomInPlayX.setDuration(1000);
 
-    private void showTimeOverDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Time Over")
-                .setMessage("You have not selected an answer within 30 seconds. Your total score is " + score +
-                        ". Do you want to restart the game?")
-                .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        restartGame();
-                    }
-                })
-                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .setCancelable(false)
-                .show();
+        zoomOutPlayX = ObjectAnimator.ofFloat(this.restartButton, "scaleX", 1.2f, 1.0f);
+        zoomOutPlayX.setRepeatCount(ObjectAnimator.INFINITE);
+        zoomOutPlayX.setRepeatMode(ObjectAnimator.REVERSE);
+        zoomOutPlayX.setDuration(1000);
+
+        // Create zoom in and zoom out animators for the restartButton scaleY
+        zoomInPlayY = ObjectAnimator.ofFloat(this.restartButton, "scaleY", 1.0f, 1.2f);
+        zoomInPlayY.setRepeatCount(ObjectAnimator.INFINITE);
+        zoomInPlayY.setRepeatMode(ObjectAnimator.REVERSE);
+        zoomInPlayY.setDuration(1500);
+
+        zoomOutPlayY = ObjectAnimator.ofFloat(this.restartButton, "scaleY", 1.2f, 1.0f);
+        zoomOutPlayY.setRepeatCount(ObjectAnimator.INFINITE);
+        zoomOutPlayY.setRepeatMode(ObjectAnimator.REVERSE);
+        zoomOutPlayY.setDuration(1500);
+
+        // Start the animations for restartButton
+        zoomInPlayX.start();
+        zoomOutPlayX.start();
+        zoomInPlayY.start();
+        zoomOutPlayY.start();
     }
 
     @Override
@@ -276,7 +397,6 @@ public class Game extends AppCompatActivity {
             backgroundMusicPlayer.release();
             backgroundMusicPlayer = null;
         }
-        // Your existing code...
     }
 
     @Override

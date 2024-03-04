@@ -11,14 +11,14 @@
     <LinearLayout
         android:id="@+id/phonelayout"
         android:layout_width="340dp"
-        android:layout_height="119dp"
+        android:layout_height="170dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.821">
+        app:layout_constraintVertical_bias="0.868">
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone" />
+
 
         <TextView
             android:id="@+id/authfail"
@@ -37,6 +38,22 @@
             android:textColor="#FF0000"
             android:textSize="15dp" />
 
+
+        <EditText
+            android:id="@+id/editTextUserName"
+            android:layout_width="255dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/edit"
+            android:fontFamily="@font/baloo"
+            android:hint="Username"
+            android:inputType="text"
+            android:shadowColor="#2B1414"
+            android:textAlignment="center"
+            android:textColor="#250F0F"
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/editTextPhoneNumber"
@@ -59,12 +76,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@android:color/transparent"
             android:foreground="@drawable/regbtn"
-            android:text="SEND OTP"
-            android:backgroundTint="@android:color/transparent" />
+            android:text="SEND OTP" />
 
     </LinearLayout>
-    <LinearLayout
+        <LinearLayout
         android:id="@+id/otplayout"
         android:layout_width="340dp"
         android:layout_height="119dp"
@@ -110,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:foreground="@drawable/regbtn"
+            android:foreground="@drawable/verifybtn"
             android:text="SEND OTP"
             android:backgroundTint="@android:color/transparent" />
 

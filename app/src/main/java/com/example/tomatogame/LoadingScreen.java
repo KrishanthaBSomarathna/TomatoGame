@@ -1,5 +1,6 @@
 package com.example.tomatogame;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 
 public class LoadingScreen extends AppCompatActivity {
 
@@ -53,6 +56,8 @@ public class LoadingScreen extends AppCompatActivity {
                 handler.post(() -> progressBar.setProgress(progressStatus));
                 if (progressStatus == 100) {
                     startActivity(new Intent(LoadingScreen.this, Home.class));
+
+                    Animatoo.INSTANCE.animateShrink(this);
                     finish(); // Finish this activity to prevent going back to it with the back button
                 }
             }
