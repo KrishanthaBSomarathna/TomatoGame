@@ -38,15 +38,32 @@
             android:background="@drawable/play" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="71dp"
-        android:layout_height="69dp"
-
-        android:backgroundTint="@android:color/transparent"
-        android:foreground="@drawable/scorebtn"
+    <LinearLayout
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="65dp"
+            android:layout_marginTop="5dp"
+            android:layout_height="65dp"
+            android:backgroundTint="@android:color/transparent"
+            android:foreground="@drawable/scorebtn" />
+
+        <Button
+            android:id="@+id/help"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:backgroundTint="@android:color/transparent"
+            android:foreground="@drawable/help" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

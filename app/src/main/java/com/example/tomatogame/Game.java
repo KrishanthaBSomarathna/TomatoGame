@@ -55,7 +55,7 @@ public class Game extends AppCompatActivity {
     private TextView timerTextView;
     private Button[] answerButtons;
     private int correctAnswer;
-    private int score = 50;
+    private int score = 0;
     String higherScore;
     private int wrongAnswersCount = 0;
     private int remainingAttempts = 3; // Initially set to 3
@@ -79,6 +79,11 @@ public class Game extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+
+
+
         backgroundMusicPlayer = MediaPlayer.create(this, R.raw.gamebg);
         backgroundMusicPlayer.setLooping(true); // Loop the background music
         backgroundMusicPlayer.start(); // Start playing the background music
@@ -86,7 +91,7 @@ public class Game extends AppCompatActivity {
         //Initialize firebase
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference();
-        phoneNumber = firebaseUser.getPhoneNumber();
+
 
         // Initialize views
         questionImageView = findViewById(R.id.question_image_view);
@@ -131,7 +136,10 @@ public class Game extends AppCompatActivity {
 
                             showPopupWindow("You have selected three times wrong Answer");
                             if(score>Integer.parseInt(higherScore)) {
-                                saveProgress(String.valueOf(score));
+                                if(firebaseUser != null){
+                                    saveProgress(String.valueOf(score));
+
+                                }
                             }
                         } else {
                             Toast.makeText(Game.this, "Incorrect Answer", Toast.LENGTH_SHORT).show();
@@ -160,9 +168,13 @@ public class Game extends AppCompatActivity {
         fetchQuestion();
         startTimer();
 
-        //Save progress to firebase
         // Retrieve the score
-        retrieveScore();
+        if(firebaseUser != null){
+
+            phoneNumber = firebaseUser.getPhoneNumber();
+            retrieveScore();
+        }
+
     }
 
     private void retrieveScore() {
@@ -291,27 +303,34 @@ public class Game extends AppCompatActivity {
     }
 
     private void startTimer() {
-        long initialTime = 100000; // Initial time duration
-        int scoreThreshold = 10; // Score threshold to decrease time
-        long timeDecreaseAmount = 10000; // Amount to decrease time
+        long initialTime = 0;
 
-        // If score is less than 80, adjust time based on score
-        if (score < 80) {
-            // Calculate adjusted time
-            long adjustedTime = initialTime - ((score / scoreThreshold) * timeDecreaseAmount);
-            // Ensure the adjusted time doesn't go below zero
-            adjustedTime = Math.max(adjustedTime, 0);
-            // If score is a multiple of 20, decrease time by 10 seconds
-            if (score % scoreThreshold == 0 && adjustedTime > 0) {
-                adjustedTime -= timeDecreaseAmount;
-            }
-            // Restart the timer with the adjusted time
-            resetTimer(adjustedTime);
-        } else {
-            // If score is 80 or more, set timer value to 20000 milliseconds
-            resetTimer(20000);
+        if (score < 10) {
+            initialTime = 100000;
+        } else if (score < 20) {
+            initialTime = 90000;
+        } else if (score < 30) {
+            initialTime = 80000;
+        } else if (score < 40) {
+            initialTime = 70000;
+        } else if (score < 50) {
+            initialTime = 60000;
+        } else if (score < 60) {
+            initialTime = 50000;
+        }else if (score < 70) {
+            initialTime = 40000;
+        }else if (score < 80) {
+            initialTime = 30000;
         }
+        else if (score < 90) {
+            initialTime = 20000;
+        }
+
+        resetTimer(initialTime);
     }
+
+
+
 
 
 
@@ -339,7 +358,10 @@ public class Game extends AppCompatActivity {
             public void onFinish() {
                 // Timer finished, show time-over dialog
                 showPopupWindow("You have not selected an answer within times.");
-                saveProgress(String.valueOf(score));
+                if(firebaseUser != null){
+                    saveProgress(String.valueOf(score));
+
+                }
             }
         };
 

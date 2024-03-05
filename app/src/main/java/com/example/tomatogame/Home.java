@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class Home extends AppCompatActivity {
     private ImageButton registerButton;
     private ImageButton playButton;
-    private Button butto;
+    private Button HighScore,Help;
     private MediaPlayer backgroundMediaPlayer;
     private MediaPlayer buttonClickMediaPlayer;
 
@@ -35,20 +36,42 @@ public class Home extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
 
+    LinearLayout info;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        butto = findViewById(R.id.button);
-        butto.setOnClickListener(new View.OnClickListener() {
+        info = findViewById(R.id.info);
+        HighScore = findViewById(R.id.button);
+        Help = findViewById(R.id.help);
+        HighScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startBounceAnimation(HighScore);
                 startActivity(new Intent(getApplicationContext(), HighScore.class));
             }
         });
+        Help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startBounceAnimation(Help);
+                startActivity(new Intent(getApplicationContext(), Help.class));
+
+            }
+        });
+
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(firebaseUser == null){
+            HighScore.setVisibility(View.GONE);
+        }else {
+            HighScore.setVisibility(View.VISIBLE);
+
+        }
 
         // Initialize MediaPlayer with background music
         backgroundMediaPlayer = MediaPlayer.create(this, R.raw.bgsound);
@@ -102,13 +125,7 @@ public class Home extends AppCompatActivity {
             });
         });
 
-        // Set click listener for butto button
-        butto.setOnClickListener(v -> {
-            // Start a "bounce" animation
-            startBounceAnimation(butto);
-            // Handle butto button click logic here
-            startActivity(new Intent(getApplicationContext(), HighScore.class));
-        });
+
     }
 
     private void playButtonClickSound(Runnable onCompletionListener) {
@@ -182,23 +199,23 @@ public class Home extends AppCompatActivity {
         zoomOutRegisterY.start();
 
         // Create zoom in and zoom out animators for the butto scaleX
-        zoomInButtoX = ObjectAnimator.ofFloat(butto, "scaleX", 1.0f, 1.2f);
+        zoomInButtoX = ObjectAnimator.ofFloat(info, "scaleX", 1.0f, 1.2f);
         zoomInButtoX.setRepeatCount(ObjectAnimator.INFINITE);
         zoomInButtoX.setRepeatMode(ObjectAnimator.REVERSE);
         zoomInButtoX.setDuration(1000);
 
-        zoomOutButtoX = ObjectAnimator.ofFloat(butto, "scaleX", 1.2f, 1.0f);
+        zoomOutButtoX = ObjectAnimator.ofFloat(info, "scaleX", 1.2f, 1.0f);
         zoomOutButtoX.setRepeatCount(ObjectAnimator.INFINITE);
         zoomOutButtoX.setRepeatMode(ObjectAnimator.REVERSE);
         zoomOutButtoX.setDuration(1000);
 
         // Create zoom in and zoom out animators for the butto scaleY
-        zoomInButtoY = ObjectAnimator.ofFloat(butto, "scaleY", 1.0f, 1.2f);
+        zoomInButtoY = ObjectAnimator.ofFloat(info, "scaleY", 1.0f, 1.2f);
         zoomInButtoY.setRepeatCount(ObjectAnimator.INFINITE);
         zoomInButtoY.setRepeatMode(ObjectAnimator.REVERSE);
         zoomInButtoY.setDuration(1500);
 
-        zoomOutButtoY = ObjectAnimator.ofFloat(butto, "scaleY", 1.2f, 1.0f);
+        zoomOutButtoY = ObjectAnimator.ofFloat(info, "scaleY", 1.2f, 1.0f);
         zoomOutButtoY.setRepeatCount(ObjectAnimator.INFINITE);
         zoomOutButtoY.setRepeatMode(ObjectAnimator.REVERSE);
         zoomOutButtoY.setDuration(1500);

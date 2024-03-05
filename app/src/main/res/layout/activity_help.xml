@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgscore"
+    tools:context=".Help">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/baloo"
+        android:text="Introduction of Game"
+        android:textColor="#770B0B"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/baloo"
+                android:text="How to Play Game"
+                android:textColor="#1900F8"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="#0E0303"
+                android:text="In this Game, players get a Number Pad and Mathematical equations displayed below."/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="281dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/s" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="#0E0303"
+                android:text="In this example, you can see equations as\n941 + 56 = 99_?_\n
+You need to find the tomato hidden value. After finding the correct answer, you need to click the number button.\n
+In this case, the answer is 7, so you need to click the number 7 button."/>
+
+            <ImageView
+                android:layout_width="386dp"
+                android:layout_height="221dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/numberpad" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/baloo"
+                android:text="Rules And Conditions"
+                android:textColor="#1900F8"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="#0E0303"
+                android:layout_marginBottom="20dp"
+                android:text="--You have only three lives--\n
+--If you give 3 wrong answers within the time limit, the\n--game will be over--\n$$ To make this game Difficult $$\n
+--The time limit decreases by 10 seconds every 10 points --scored, until you reach 80 points--\n
+--After reaching 80 points, the timer is set to 20 seconds--"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -166,6 +166,7 @@ public class Signup extends AppCompatActivity {
                         String username = editTextUserName.getText().toString();
                         // Phone authentication successful
                         databaseReference.child("User").child(fullPhoneNumber).child("UserName").setValue(username);
+                        databaseReference.child("User").child(fullPhoneNumber).child("Score").setValue("0");
                         startActivity(new Intent(Signup.this, Home.class));
                     } else {
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {

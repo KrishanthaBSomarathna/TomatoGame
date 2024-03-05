@@ -23,11 +23,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+
 public class HighScore extends AppCompatActivity {
     DatabaseReference database;
     TextView player1Name, player2Name, player3Name, player4Name, player5Name;
     TextView player1Score, player2Score, player3Score, player4Score, player5Score, myScore;
     String higherScore = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,36 +67,60 @@ public class HighScore extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        ArrayList<User> topPlayers = new ArrayList<>();
+                        ArrayList<Users> topPlayers = new ArrayList<>();
                         for (DataSnapshot playerSnapshot : snapshot.getChildren()) {
                             String userName = playerSnapshot.child("UserName").getValue(String.class);
                             String score = playerSnapshot.child("Score").getValue(String.class);
-                            topPlayers.add(new User(userName, score));
+                            // Check if score is not null before adding it
+                            if (score != null) {
+                                topPlayers.add(new Users(userName, score));
+                            }
                         }
 
                         // Sort the list of users based on their score
-                        topPlayers.sort((user1, user2) -> Integer.compare(Integer.parseInt(user2.getScore()), Integer.parseInt(user1.getScore())));
+                        topPlayers.sort((user1, user2) -> {
+                            // Convert scores to integers before comparing
+                            int score1 = Integer.parseInt(user1.getScore());
+                            int score2 = Integer.parseInt(user2.getScore());
+                            return Integer.compare(score2, score1); // Compare in descending order
+                        });
 
                         // Now topPlayers list contains all users sorted by score in descending order
                         // Displaying the top 5 players in the UI
-                        if (topPlayers.size() >= 5) {
-                            player1Name.setText(topPlayers.get(0).getUserName());
-                            player1Score.setText(topPlayers.get(0).getScore());
-                            player2Name.setText(topPlayers.get(1).getUserName());
-                            player2Score.setText(topPlayers.get(1).getScore());
-                            player3Name.setText(topPlayers.get(2).getUserName());
-                            player3Score.setText(topPlayers.get(2).getScore());
-                            player4Name.setText(topPlayers.get(3).getUserName());
-                            player4Score.setText(topPlayers.get(3).getScore());
-                            player5Name.setText(topPlayers.get(4).getUserName());
-                            player5Score.setText(topPlayers.get(4).getScore());
+                        if (!topPlayers.isEmpty()) {
+                            int size = Math.min(topPlayers.size(), 5); // Ensure size is not greater than 5
+                            for (int i = 0; i < size; i++) {
+                                Users user = topPlayers.get(i);
+                                switch (i) {
+                                    case 0:
+                                        player1Name.setText(user.getUserName());
+                                        player1Score.setText(user.getScore());
+                                        break;
+                                    case 1:
+                                        player2Name.setText(user.getUserName());
+                                        player2Score.setText(user.getScore());
+                                        break;
+                                    case 2:
+                                        player3Name.setText(user.getUserName());
+                                        player3Score.setText(user.getScore());
+                                        break;
+                                    case 3:
+                                        player4Name.setText(user.getUserName());
+                                        player4Score.setText(user.getScore());
+                                        break;
+                                    case 4:
+                                        player5Name.setText(user.getUserName());
+                                        player5Score.setText(user.getScore());
+                                        break;
+                                }
+                            }
                         }
 
-                        Log.d("TopPlayers", "Player 1 Name: " + player1Name + ", Score: " + player1Score);
-                        Log.d("TopPlayers", "Player 2 Name: " + player2Name + ", Score: " + player2Score);
-                        Log.d("TopPlayers", "Player 3 Name: " + player3Name + ", Score: " + player3Score);
-                        Log.d("TopPlayers", "Player 4 Name: " + player4Name + ", Score: " + player4Score);
-                        Log.d("TopPlayers", "Player 5 Name: " + player5Name + ", Score: " + player5Score);
+                        // Log top players for debugging
+                        for (int i = 0; i < topPlayers.size(); i++) {
+                            Users user = topPlayers.get(i);
+                            Log.d("TopPlayers", "Player " + (i + 1) + " Name: " + user.getUserName() + ", Score: " + user.getScore());
+                        }
                     }
 
                     @Override
@@ -128,20 +154,4 @@ public class HighScore extends AppCompatActivity {
 }
 
 
-class User {
-    private String userName;
-    private String score;
 
-    public User(String userName, String score) {
-        this.userName = userName;
-        this.score = score;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getScore() {
-        return score;
-    }
-}

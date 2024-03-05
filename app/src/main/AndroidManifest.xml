@@ -16,7 +16,10 @@
         android:theme="@style/Theme.TomatoGame"
         tools:targetApi="31">
         <activity
-            android:name=".showPopupWindow"
+            android:name=".Help"
+            android:exported="false" />
+        <activity
+            android:name=".User"
             android:exported="false" />
         <activity
             android:name=".HighScore"
