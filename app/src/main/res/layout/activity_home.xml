@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/home"
+    android:background="@drawable/homebb"
     tools:context=".Home">
 
     <LinearLayout
@@ -28,14 +28,20 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/registor" />
+            android:background="@drawable/registor"
+            android:elevation="8dp"
+            android:outlineAmbientShadowColor="#3D000000"
+            android:outlineSpotShadowColor="#1F000000" />
 
         <ImageButton
             android:id="@+id/playButton"
             android:layout_width="175dp"
             android:layout_height="91dp"
             android:layout_margin="10dp"
-            android:background="@drawable/play" />
+            android:background="@drawable/play"
+            android:elevation="8dp"
+            android:outlineAmbientShadowColor="#3D000000"
+            android:outlineSpotShadowColor="#1F000000" />
     </LinearLayout>
 
     <LinearLayout
