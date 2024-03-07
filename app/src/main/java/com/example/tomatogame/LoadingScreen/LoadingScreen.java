@@ -1,6 +1,5 @@
-package com.example.tomatogame;
+package com.example.tomatogame.LoadingScreen;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +12,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-
+import com.example.tomatogame.Home.Home;
+import com.example.tomatogame.R;
+/**
+ * Activity representing the loading screen displayed while the game is loading.
+ * This activity shows a progress bar indicating the loading progress.
+ */
 public class LoadingScreen extends AppCompatActivity {
 
     private ProgressBar progressBar;

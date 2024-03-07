@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/loading"
-    tools:context=".LoadingScreen">
+    tools:context=".LoadingScreen.LoadingScreen">
 
     <ProgressBar
         android:id="@+id/progressBar"

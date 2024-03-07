@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/homebb"
-    tools:context=".Home">
+    tools:context=".Home.Home">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -38,6 +38,7 @@
             android:layout_width="175dp"
             android:layout_height="91dp"
             android:layout_margin="10dp"
+            android:padding="10dp"
             android:background="@drawable/play"
             android:elevation="8dp"
             android:outlineAmbientShadowColor="#3D000000"

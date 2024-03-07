@@ -1,4 +1,4 @@
-package com.example.tomatogame;
+package com.example.tomatogame.Help;
 
 import android.os.Bundle;
 
@@ -10,12 +10,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.tomatogame.fragment.FragmentViewAdapter;
-import com.example.tomatogame.fragment.PlayInstruction;
-import com.example.tomatogame.fragment.SaveProgress;
-import com.example.tomatogame.fragment.SimplePagerAdapter;
-import com.google.android.material.tabs.TabLayout;
+import com.example.tomatogame.R;
 
+/**
+ * Activity that displays help information to the user.
+ * This activity handles edge-to-edge display and window insets.
+ */
 public class Help extends AppCompatActivity {
 
     @Override

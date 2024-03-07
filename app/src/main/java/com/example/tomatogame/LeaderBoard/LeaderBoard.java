@@ -1,4 +1,4 @@
-package com.example.tomatogame;
+package com.example.tomatogame.LeaderBoard;
 
 import static android.content.ContentValues.TAG;
 
@@ -13,8 +13,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.tomatogame.Model.Users;
+import com.example.tomatogame.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,11 +24,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-
-public class HighScore extends AppCompatActivity {
+/**
+ * Activity that displays the leaderboard of top players.
+ * This activity retrieves user scores from Firebase Realtime Database and displays them.
+ */
+public class LeaderBoard extends AppCompatActivity {
     DatabaseReference database;
     TextView player1Name, player2Name, player3Name, player4Name, player5Name;
-    TextView player1Score, player2Score, player3Score, player4Score, player5Score, myScore;
+    TextView player1Score, player2Score, player3Score, player4Score, player5Score,myScore ;
     String higherScore = "";
 
 
@@ -35,7 +39,7 @@ public class HighScore extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_high_score);
+        setContentView(R.layout.activity_leader_board);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -55,12 +59,9 @@ public class HighScore extends AppCompatActivity {
         player5Score = findViewById(R.id.player5Score);
         myScore = findViewById(R.id.myScore);
 
+
         // Initialize Firebase database reference
         database = FirebaseDatabase.getInstance().getReference();
-
-        // get userScore
-        retrieveScore();
-
         // Retrieve data from Firebase Realtime Database
         database.child("User")
                 .orderByChild("Score")
@@ -128,6 +129,7 @@ public class HighScore extends AppCompatActivity {
                         // Handle error
                     }
                 });
+        retrieveScore();
     }
 
     private void retrieveScore() {

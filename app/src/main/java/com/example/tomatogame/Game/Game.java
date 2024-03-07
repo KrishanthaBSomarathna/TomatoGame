@@ -1,4 +1,4 @@
-package com.example.tomatogame;
+package com.example.tomatogame.Game;
 
 import static android.content.ContentValues.TAG;
 
@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewDebug;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
@@ -30,13 +29,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.tomatogame.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -45,7 +44,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+/**
+ * Main class where the games are coming from.
+ *
+ */
 public class Game extends AppCompatActivity {
     private ApiService apiService;
     private ImageView questionImageView;
@@ -56,7 +58,7 @@ public class Game extends AppCompatActivity {
     private Button[] answerButtons;
     private int correctAnswer;
     private int score = 0;
-    String higherScore;
+    String higherScore = "0";
     private int wrongAnswersCount = 0;
     private int remainingAttempts = 3; // Initially set to 3
     private CountDownTimer countDownTimer;
@@ -67,7 +69,7 @@ public class Game extends AppCompatActivity {
     private ImageButton restartButton,exitButton;
     private FirebaseUser firebaseUser;
     private DatabaseReference databaseReference;
-    private String phoneNumber;
+    private String phoneNumber="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,9 @@ public class Game extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+
 
 
 
@@ -136,10 +141,10 @@ public class Game extends AppCompatActivity {
 
                             showPopupWindow("You have selected three times wrong Answer");
                             if(score>Integer.parseInt(higherScore)) {
-                                if(firebaseUser != null){
+
                                     saveProgress(String.valueOf(score));
 
-                                }
+
                             }
                         } else {
                             Toast.makeText(Game.this, "Incorrect Answer", Toast.LENGTH_SHORT).show();
@@ -198,7 +203,12 @@ public class Game extends AppCompatActivity {
     }
 
     private void saveProgress( String score){
-        databaseReference.child("User").child(phoneNumber).child("Score").setValue(score);
+        if(firebaseUser != null){
+            databaseReference.child("User").child(phoneNumber).child("Score").setValue(score);
+
+        }else{
+            Toast.makeText(getApplicationContext(),"Register to Save Progress",Toast.LENGTH_LONG).show();
+        }
     }
 
     private void playButtonClickSound() {
@@ -358,10 +368,10 @@ public class Game extends AppCompatActivity {
             public void onFinish() {
                 // Timer finished, show time-over dialog
                 showPopupWindow("You have not selected an answer within times.");
-                if(firebaseUser != null){
+
                     saveProgress(String.valueOf(score));
 
-                }
+
             }
         };
 

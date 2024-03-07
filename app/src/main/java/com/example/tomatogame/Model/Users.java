@@ -1,5 +1,8 @@
-package com.example.tomatogame;
-
+package com.example.tomatogame.Model;
+/**
+ * Represents a user in the game, containing username and score.
+ * This class is used to store and retrieve user information from Firebase Realtime Database.
+ */
 public class Users {
     private String userName;
     private String score;

@@ -1,4 +1,4 @@
-package com.example.tomatogame;
+package com.example.tomatogame.SignUp;
 
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
@@ -9,21 +9,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.tomatogame.Home.Home;
+import com.example.tomatogame.R;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -33,7 +31,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
-
+/**
+ * Activity for user sign-up with phone number verification.
+ * This activity handles Firebase authentication for user sign-up and phone number verification.
+ */
 public class Signup extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase firebaseDatabase;
@@ -82,11 +83,15 @@ public class Signup extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String phoneNumber = editTextPhoneNumber.getText().toString().trim();
+                String username = editTextUserName.getText().toString().trim();
                 authfail.setVisibility(View.GONE);
 
-                if (phoneNumber.isEmpty()) {
+                if (username.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Enter Username", Toast.LENGTH_LONG).show();
+                } if (phoneNumber.isEmpty()){
                     Toast.makeText(getApplicationContext(), "Enter Phone Number", Toast.LENGTH_LONG).show();
-                } else {
+
+                }else {
                     sendVerificationCode(); // Call the function to send the OTP
                 }
             }

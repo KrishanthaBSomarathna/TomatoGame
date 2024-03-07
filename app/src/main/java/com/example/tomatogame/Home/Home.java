@@ -1,11 +1,10 @@
-package com.example.tomatogame;
+package com.example.tomatogame.Home;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,9 +17,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.example.tomatogame.Game.Game;
+import com.example.tomatogame.LeaderBoard.LeaderBoard;
+import com.example.tomatogame.R;
+import com.example.tomatogame.SignUp.Signup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+/**
+ * Main activity representing the home screen of the game.
+ * This activity handles user authentication, background music, and button animations.
+ */
 public class Home extends AppCompatActivity {
     private ImageButton registerButton;
     private ImageButton playButton;
@@ -51,14 +57,14 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startBounceAnimation(HighScore);
-                startActivity(new Intent(getApplicationContext(), HighScore.class));
+                startActivity(new Intent(getApplicationContext(), LeaderBoard.class));
             }
         });
         Help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startBounceAnimation(Help);
-                startActivity(new Intent(getApplicationContext(), Help.class));
+                startActivity(new Intent(getApplicationContext(), com.example.tomatogame.Help.Help.class));
 
             }
         });
