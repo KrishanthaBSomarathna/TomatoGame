@@ -1,4 +1,4 @@
-package com.example.tomatogame.Home;
+package com.example.tomatogame.Controller.ViewControllers.Home;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -17,10 +17,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
-import com.example.tomatogame.Game.Game;
-import com.example.tomatogame.LeaderBoard.LeaderBoard;
+import com.example.tomatogame.Controller.ViewControllers.Game.MainActivity;
+import com.example.tomatogame.Controller.ViewControllers.Help.Help;
+import com.example.tomatogame.Controller.ViewControllers.LeaderBoard.LeaderBoard;
 import com.example.tomatogame.R;
-import com.example.tomatogame.SignUp.Signup;
+import com.example.tomatogame.Controller.ViewControllers.Authentication.Authentication;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 /**
@@ -28,8 +29,10 @@ import com.google.firebase.auth.FirebaseUser;
  * This activity handles user authentication, background music, and button animations.
  */
 public class Home extends AppCompatActivity {
-    private ImageButton registerButton;
-    private ImageButton playButton;
+
+    public static ImageButton registerButton;
+
+    private ImageButton playButton,signOut;
     private Button HighScore,Help;
     private MediaPlayer backgroundMediaPlayer;
     private MediaPlayer buttonClickMediaPlayer;
@@ -49,10 +52,21 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         info = findViewById(R.id.info);
         HighScore = findViewById(R.id.button);
         Help = findViewById(R.id.help);
+        signOut = findViewById(R.id.signout);
+
+
+//        signOut.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startBounceAnimation(signOut);
+//                firebaseAuth.signOut();
+//                signOut.setVisibility(View.GONE);
+//            }
+//        });
         HighScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,13 +78,13 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startBounceAnimation(Help);
-                startActivity(new Intent(getApplicationContext(), com.example.tomatogame.Help.Help.class));
+                startActivity(new Intent(getApplicationContext(), com.example.tomatogame.Controller.ViewControllers.Help.Help.class));
 
             }
         });
 
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
 
         if(firebaseUser == null){
             HighScore.setVisibility(View.GONE);
@@ -114,7 +128,7 @@ public class Home extends AppCompatActivity {
 
             playButtonClickSound(() -> {
                 // Start the new activity after the sound completes
-                Intent intent = new Intent(Home.this, Signup.class);
+                Intent intent = new Intent(Home.this, Authentication.class);
                 startActivity(intent);
                 Animatoo.INSTANCE.animateSplit(this);
             });
@@ -125,7 +139,7 @@ public class Home extends AppCompatActivity {
             startBounceAnimation(playButton);
             playButtonClickSound(() -> {
                 // Start the new activity after the sound completes
-                Intent intent = new Intent(Home.this, Game.class);
+                Intent intent = new Intent(Home.this, MainActivity.class);
                 startActivity(intent);
                 Animatoo.INSTANCE.animateSplit(this);
             });

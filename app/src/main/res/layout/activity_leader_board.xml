@@ -7,8 +7,20 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="@drawable/leaderboard"
-    tools:context=".LeaderBoard.LeaderBoard">
+    tools:context=".Controller.ViewControllers.LeaderBoard.LeaderBoard">
 
+    <ImageButton
+        android:id="@+id/signout"
+        android:layout_width="93dp"
+        android:layout_height="51dp"
+
+
+        android:background="@drawable/signout"
+
+        android:outlineAmbientShadowColor="#3D000000"
+        android:outlineSpotShadowColor="#1F000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/myScore"

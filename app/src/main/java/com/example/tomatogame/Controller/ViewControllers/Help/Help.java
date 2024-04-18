@@ -1,4 +1,4 @@
-package com.example.tomatogame.Help;
+package com.example.tomatogame.Controller.ViewControllers.Help;
 
 import android.os.Bundle;
 

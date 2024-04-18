@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/homebb"
-    tools:context=".Home.Home">
+    android:background="@drawable/ho"
+    tools:context=".Controller.ViewControllers.Home.Home">
 
     <LinearLayout
         android:id="@+id/linearLayout"

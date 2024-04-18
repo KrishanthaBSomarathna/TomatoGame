@@ -1,4 +1,4 @@
-package com.example.tomatogame.Game;
+package com.example.tomatogame.Model;
 
 import com.google.gson.annotations.SerializedName;
 /**

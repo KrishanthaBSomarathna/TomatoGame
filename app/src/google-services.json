@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "919053790781",
+    "firebase_url": "https://tomatogame-7128e-default-rtdb.firebaseio.com",
+    "project_id": "tomatogame-7128e",
+    "storage_bucket": "tomatogame-7128e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919053790781:android:0476aab59224ee9e174454",
+        "android_client_info": {
+          "package_name": "com.example.tomatogame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919053790781-ca9pdfttkbhmoib238k5lpih87l5og80.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tomatogame",
+            "certificate_hash": "7b7cb61251458937811a90fd8c0f987b6df37314"
+          }
+        },
+        {
+          "client_id": "919053790781-v2faltjmupn0lmd4fe9oe7gr1bd31nt5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq2xtbMiZECcYNN88O0xlImUkzcHt7sFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919053790781-v2faltjmupn0lmd4fe9oe7gr1bd31nt5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

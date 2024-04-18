@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bgscore"
-    tools:context=".Help.Help">
+    android:background="@color/white"
+    tools:context=".Controller.ViewControllers.Help.Help">
 
     <TextView
         android:id="@+id/textView"
@@ -50,7 +50,8 @@
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textColor="#0E0303"
-                android:text="In this Game, players get a Number Pad and Mathematical equations displayed below."/>
+                android:textSize="18dp"
+                android:text="In this Game, players get a Number Pad and Mathematical equations displayed as below."/>
 
             <ImageView
                 android:layout_width="match_parent"
@@ -62,11 +63,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:textSize="18dp"
                 android:textStyle="bold"
                 android:textColor="#0E0303"
                 android:text="In this example, you can see equations as\n941 + 56 = 99_?_\n
 You need to find the tomato hidden value. After finding the correct answer, you need to click the number button.\n
-In this case, the answer is 7, so you need to click the number 7 button."/>
+In this case, the answer is 7 (941 + 56 = 997), so you need to click the number 7 button."/>
 
             <ImageView
                 android:layout_width="386dp"
@@ -88,11 +90,12 @@ In this case, the answer is 7, so you need to click the number 7 button."/>
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textColor="#0E0303"
+                android:textSize="17dp"
                 android:layout_marginBottom="20dp"
-                android:text="--You have only three lives--\n
---If you give 3 wrong answers within the time limit, the\n--game will be over--\n$$ To make this game Difficult $$\n
---The time limit decreases by 10 seconds every 10 points --scored, until you reach 80 points--\n
---After reaching 80 points, the timer is set to 20 seconds--"/>
+                android:text="You have only three live times\n
+If you give 3 wrong answers or not selete the answer within\nthe time limit the game will be over--\n$$ To make this game Difficult $$\n
+The time limit decreases by 10 seconds\nevery 10 points scored, until you reach 80 points--\n
+After reaching 80 points, the timer is set to 20 seconds"/>
 
         </LinearLayout>
     </ScrollView>

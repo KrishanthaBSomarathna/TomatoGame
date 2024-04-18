@@ -1,8 +1,7 @@
-package com.example.tomatogame.Game;
+package com.example.tomatogame.Controller.ViewControllers.Game;
 
 import static android.content.ContentValues.TAG;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -29,6 +28,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.tomatogame.Controller.GameControllers.GameApiService;
+import com.example.tomatogame.Controller.ViewControllers.Events.ButtonAnimation;
+import com.example.tomatogame.Controller.ViewControllers.Events.SaveProgress;
+import com.example.tomatogame.Controller.ViewControllers.Events.UpdateHearts;
+import com.example.tomatogame.Model.QuestionResponse;
 import com.example.tomatogame.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,8 +52,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Main class where the games are coming from.
  *
  */
-public class Game extends AppCompatActivity {
-    private ApiService apiService;
+public class MainActivity extends AppCompatActivity {
+    private GameApiService gameApiService;
     private ImageView questionImageView;
     private TextView solutionTextView;
     private TextView scoreTextView;
@@ -65,17 +69,24 @@ public class Game extends AppCompatActivity {
     private MediaPlayer buttonClickSound;
     private MediaPlayer backgroundMusicPlayer;
     private Vibrator vibrator; // Declare Vibrator object
-    private ObjectAnimator zoomInPlayX, zoomOutPlayX, zoomInPlayY, zoomOutPlayY;
+
     private ImageButton restartButton,exitButton;
     private FirebaseUser firebaseUser;
     private DatabaseReference databaseReference;
-    private String phoneNumber="";
+    private String userID="";
 
+    SaveProgress saveProgress = SaveProgress.getInstance(this);
+
+
+    ButtonAnimation buttonAnimation;
+
+    UpdateHearts updateHearts;
+    private SaveProgress saveProgressInstance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_game);
+        setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -84,6 +95,8 @@ public class Game extends AppCompatActivity {
 
 
 
+       // Initialize UpdateHearts object
+        updateHearts = new UpdateHearts();
 
 
 
@@ -125,7 +138,7 @@ public class Game extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     playButtonClickSound(); // Play button click sound
-                    animateButton(v); // Animate the button
+                    ButtonAnimation.animateButton(v); // Animate the button
                     int selectedAnswer = Integer.parseInt(((Button) v).getText().toString());
                     if (selectedAnswer == correctAnswer) {
                         score++;
@@ -136,18 +149,18 @@ public class Game extends AppCompatActivity {
                         vibrator.vibrate(500);
                         wrongAnswersCount++;
                         remainingAttempts--;
-                        updateHearts(); // Update hearts after wrong answer
+                        updateHearts.update(remainingAttempts,heartTextView); // Update hearts after wrong answer
                         if (remainingAttempts == 0) {
 
                             showPopupWindow("You have selected three times wrong Answer");
                             if(score>Integer.parseInt(higherScore)) {
 
-                                    saveProgress(String.valueOf(score));
+                                saveProgress.saveProgress(String.valueOf(score));
 
 
                             }
                         } else {
-                            Toast.makeText(Game.this, "Incorrect Answer", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Incorrect Answer", Toast.LENGTH_SHORT).show();
                         }
                     }
                     resetTimer();
@@ -161,7 +174,7 @@ public class Game extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        apiService = retrofit.create(ApiService.class);
+        gameApiService = retrofit.create(GameApiService.class);
 
         // Initialize button click sound
         buttonClickSound = MediaPlayer.create(this, R.raw.btnclick);
@@ -176,14 +189,14 @@ public class Game extends AppCompatActivity {
         // Retrieve the score
         if(firebaseUser != null){
 
-            phoneNumber = firebaseUser.getPhoneNumber();
+            userID = firebaseUser.getUid();
             retrieveScore();
         }
 
     }
 
     private void retrieveScore() {
-        DatabaseReference userRef = databaseReference.child("User").child(phoneNumber);
+        DatabaseReference userRef = databaseReference.child("User").child(userID);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -191,7 +204,7 @@ public class Game extends AppCompatActivity {
                     higherScore = dataSnapshot.child("Score").getValue(String.class);
                     Log.d(TAG, "Score: " + higherScore);
                 } else {
-                    Log.d(TAG, "User data not found for phone number: " + phoneNumber);
+                    Log.d(TAG, "User data not found for phone number: " + userID);
                 }
             }
 
@@ -202,14 +215,7 @@ public class Game extends AppCompatActivity {
         });
     }
 
-    private void saveProgress( String score){
-        if(firebaseUser != null){
-            databaseReference.child("User").child(phoneNumber).child("Score").setValue(score);
 
-        }else{
-            Toast.makeText(getApplicationContext(),"Register to Save Progress",Toast.LENGTH_LONG).show();
-        }
-    }
 
     private void playButtonClickSound() {
         if (buttonClickSound != null) {
@@ -217,16 +223,10 @@ public class Game extends AppCompatActivity {
         }
     }
 
-    private void animateButton(View view) {
-        Animation animation = new ScaleAnimation(1.0f, 0.9f, 1.0f, 0.9f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animation.setDuration(100);
-        animation.setRepeatMode(Animation.REVERSE);
-        animation.setRepeatCount(1);
-        view.startAnimation(animation);
-    }
+
 
     private void fetchQuestion() {
-        Call<QuestionResponse> call = apiService.getQuestion();
+        Call<QuestionResponse> call = gameApiService.getQuestion();
         call.enqueue(new Callback<QuestionResponse>() {
             @Override
             public void onResponse(Call<QuestionResponse> call, Response<QuestionResponse> response) {
@@ -253,13 +253,7 @@ public class Game extends AppCompatActivity {
         });
     }
 
-    private void updateHearts() {
-        StringBuilder hearts = new StringBuilder();
-        for (int i = 0; i < remainingAttempts; i++) {
-            hearts.append("❤️ ");
-        }
-        heartTextView.setText(hearts.toString());
-    }
+
 
     private void showPopupWindow( String message) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -278,7 +272,7 @@ public class Game extends AppCompatActivity {
         TextView popuptext = popupView.findViewById(R.id.popuptext);
 
         popuptext.setText(message);
-        startLoopAnimations(restartButton);
+        ButtonAnimation.startLoopAnimations(restartButton);
         // Set score text
         scoreTextView.setText(String.valueOf(score));
 
@@ -307,7 +301,7 @@ public class Game extends AppCompatActivity {
         wrongAnswersCount = 0;
         remainingAttempts = 3;
         scoreTextView.setText(String.valueOf(score));
-        updateHearts();
+        updateHearts.update(remainingAttempts,heartTextView);
         fetchQuestion();
         resetTimer();
     }
@@ -332,7 +326,7 @@ public class Game extends AppCompatActivity {
         }else if (score < 80) {
             initialTime = 30000;
         }
-        else if (score < 90) {
+        else {
             initialTime = 20000;
         }
 
@@ -369,7 +363,7 @@ public class Game extends AppCompatActivity {
                 // Timer finished, show time-over dialog
                 showPopupWindow("You have not selected an answer within times.");
 
-                    saveProgress(String.valueOf(score));
+                saveProgress.saveProgress(String.valueOf(score));
 
 
             }
@@ -377,36 +371,12 @@ public class Game extends AppCompatActivity {
 
         countDownTimer.start(); // Start the new timer
     }
-
-    private void startLoopAnimations(ImageButton restartButton) {
-        // Create zoom in and zoom out animators for the restartButton scaleX
-        zoomInPlayX = ObjectAnimator.ofFloat(this.restartButton, "scaleX", 1.0f, 1.2f);
-        zoomInPlayX.setRepeatCount(ObjectAnimator.INFINITE);
-        zoomInPlayX.setRepeatMode(ObjectAnimator.REVERSE);
-        zoomInPlayX.setDuration(1000);
-
-        zoomOutPlayX = ObjectAnimator.ofFloat(this.restartButton, "scaleX", 1.2f, 1.0f);
-        zoomOutPlayX.setRepeatCount(ObjectAnimator.INFINITE);
-        zoomOutPlayX.setRepeatMode(ObjectAnimator.REVERSE);
-        zoomOutPlayX.setDuration(1000);
-
-        // Create zoom in and zoom out animators for the restartButton scaleY
-        zoomInPlayY = ObjectAnimator.ofFloat(this.restartButton, "scaleY", 1.0f, 1.2f);
-        zoomInPlayY.setRepeatCount(ObjectAnimator.INFINITE);
-        zoomInPlayY.setRepeatMode(ObjectAnimator.REVERSE);
-        zoomInPlayY.setDuration(1500);
-
-        zoomOutPlayY = ObjectAnimator.ofFloat(this.restartButton, "scaleY", 1.2f, 1.0f);
-        zoomOutPlayY.setRepeatCount(ObjectAnimator.INFINITE);
-        zoomOutPlayY.setRepeatMode(ObjectAnimator.REVERSE);
-        zoomOutPlayY.setDuration(1500);
-
-        // Start the animations for restartButton
-        zoomInPlayX.start();
-        zoomOutPlayX.start();
-        zoomInPlayY.start();
-        zoomOutPlayY.start();
+    @Override
+    public void onBackPressed() {
+        saveProgress.saveProgress(String.valueOf(score));
+        super.onBackPressed();
     }
+
 
     @Override
     protected void onDestroy() {

@@ -1,9 +1,12 @@
-package com.example.tomatogame.LeaderBoard;
+package com.example.tomatogame.Controller.ViewControllers.LeaderBoard;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,6 +16,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.tomatogame.Controller.ViewControllers.Home.Home;
 import com.example.tomatogame.Model.Users;
 import com.example.tomatogame.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +37,7 @@ public class LeaderBoard extends AppCompatActivity {
     TextView player1Name, player2Name, player3Name, player4Name, player5Name;
     TextView player1Score, player2Score, player3Score, player4Score, player5Score,myScore ;
     String higherScore = "";
+    ImageButton signout;
 
 
     @Override
@@ -58,6 +63,16 @@ public class LeaderBoard extends AppCompatActivity {
         player4Score = findViewById(R.id.player4Score);
         player5Score = findViewById(R.id.player5Score);
         myScore = findViewById(R.id.myScore);
+        signout = findViewById(R.id.signout);
+
+        signout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), Home.class));
+
+            }
+        });
 
 
         // Initialize Firebase database reference
@@ -132,9 +147,11 @@ public class LeaderBoard extends AppCompatActivity {
         retrieveScore();
     }
 
+
+
     private void retrieveScore() {
-        String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-        DatabaseReference userRef = database.child("User").child(phoneNumber);
+        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference userRef = database.child("User").child(userID);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -143,7 +160,7 @@ public class LeaderBoard extends AppCompatActivity {
                     Log.d(TAG, "Score: " + higherScore);
                     myScore.setText(higherScore);
                 } else {
-                    Log.d(TAG, "User data not found for phone number: " + phoneNumber);
+                    Log.d(TAG, "User data not found for phone number: " + userID);
                 }
             }
 

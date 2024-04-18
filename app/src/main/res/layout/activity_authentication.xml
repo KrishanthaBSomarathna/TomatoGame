@@ -5,13 +5,13 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUp.Signup"
+    tools:context=".Controller.ViewControllers.Authentication.Authentication"
     android:background="@drawable/regbg">
 
     <LinearLayout
         android:id="@+id/phonelayout"
         android:layout_width="340dp"
-        android:layout_height="170dp"
+        android:layout_height="260dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,8 +35,9 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="Try Another Phone Number or Try Later!"
-            android:textColor="#FF0000"
+            android:textColor="#0048FF"
             android:textSize="15dp" />
+
 
 
         <EditText
@@ -80,6 +81,22 @@
             android:backgroundTint="@android:color/transparent"
             android:foreground="@drawable/regbtn"
             android:text="SEND OTP" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="----- or -----"
+            android:textColor="@color/black"
+            android:layout_marginBottom="5dp"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center" />
+
+
 
     </LinearLayout>
         <LinearLayout
